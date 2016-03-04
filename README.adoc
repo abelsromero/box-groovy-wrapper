@@ -1,3 +1,9 @@
 === Box Groovy Wrapper
 
 Currently this project is just a POC to test of https://github.com/box/box-java-sdk[Java BOX SDK]
+
+
+TODO:
+* Create with simple metadata
+* Manage MetadataTemplates
+* Download content
