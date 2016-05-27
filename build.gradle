@@ -5,7 +5,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.box:box-java-sdk:2.0.0'
+    compile 'com.box:box-java-sdk:2.1.1'
     compile 'org.codehaus.groovy:groovy-all:2.4.6'
 }
 
