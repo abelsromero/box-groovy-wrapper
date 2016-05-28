@@ -14,25 +14,25 @@ import java.security.PrivateKey
  */
 public class EnterpriseAPIConnection {
 
-    private String appId
-    private String appKey
+    private String clientId
+    private String keyId
     private PrivateKey signatureKey
 
     private boolean debug = false
 
-    public EnterpriseAPIConnection(String appId, String appKey, PrivateKey signatureKey) {
-        this.appId = appId
-        this.appKey = appKey
+    public EnterpriseAPIConnection(String clientId, String keyId, PrivateKey signatureKey) {
+        this.clientId = clientId
+        this.keyId = keyId
         this.signatureKey = signatureKey
     }
 
     // https://box-content.readme.io/docs/app-auth
     public String generateAppUserRequest(String userId) {
-        return generateJwtPayload(appKey, userId, ['box_sub_type': 'user'])
+        return generateJwtPayload(clientId, userId, ['box_sub_type': 'user'])
     }
 
-    public String generateEnterpriseTokenRequest(String adminId) {
-        return generateJwtPayload(appKey, adminId, ['box_sub_type': 'enterprise'])
+    public String generateEnterpriseTokenRequest(String enterpriseId) {
+        return generateJwtPayload(clientId, enterpriseId, ['box_sub_type': 'enterprise'])
     }
 
     private String generateJwtPayload(String issuer, String subject, Map<String, String> properties) {
@@ -51,12 +51,14 @@ public class EnterpriseAPIConnection {
 
         JsonWebSignature jws = new JsonWebSignature()
 
-        if (debug)
-            println JsonOutput.prettyPrint(claims.toJson())
-
         jws.setPayload(claims.toJson())
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256)
-        jws.setKeyIdHeaderValue(appId)
+        jws.setKeyIdHeaderValue(keyId)
+
+        if (debug) {
+            println jws.toString()
+            println JsonOutput.prettyPrint(claims.toJson())
+        }
 
         // The JWT is signed using the private key
         jws.setKey(signatureKey)
