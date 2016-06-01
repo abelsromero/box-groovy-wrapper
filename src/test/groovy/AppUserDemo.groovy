@@ -10,6 +10,7 @@ import static org.abelsromero.box.sdk.helpers.FileHelpers.getFile
 /**
  * Created by ABEL.SALGADOROMERO on 25/05/2016.
  */
+this.addShutdownHook { println "END" }
 
 def config = new ConfigSlurper().parse(getFile('config.groovy').toURL())
 
@@ -33,24 +34,25 @@ def keyLocation = config."$key".keyLocation
 File privateKey = getFile(keyLocation)
 PrivateKey signaturekey = RSAKeyReader.readPrivate(privateKey)
 
-// Working
+// Init API
 EnterpriseAPIConnection enterpriseAPI = new EnterpriseAPIConnection(clientId, keyId, signaturekey)
 enterpriseAPI.debug = true
 
-String enterpriseToken = enterpriseAPI.generateEnterpriseTokenRequest(enterpriseId)
-println enterpriseToken
+// First authenticattion step
+String token
+// token = enterpriseAPI.generateEnterpriseTokenRequest(enterpriseId)
+println token
 println "=" * 36
-//println enterpriseAPI.generateAppUserRequest(user_id)
+token = enterpriseAPI.generateAppUserRequest('user_id')
 
-String authToken = enterpriseAPI.authenticate(config."$key".secret, enterpriseToken)
+// Seconf authenticattion step
+String authToken = enterpriseAPI.authenticate(config."$key".secret, token)
 
 /**
- * Create App User
+ * Do real stuff
  */
 BoxAPIConnection api = new BoxAPIConnection(authToken)
-// BoxUser.createAppUser(api, user_name)
+// do stuff...
 
 
-this.addShutdownHook {
-    println "END"
-}
+
