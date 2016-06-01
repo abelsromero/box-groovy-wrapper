@@ -3,7 +3,25 @@
 Currently this project is just a POC to test of https://github.com/box/box-java-sdk[Java BOX SDK]
 
 
+== Notes on app integration steps
+Main documentation can be found here:
+
+. Setup an application: https://docs.box.com/v2.0/docs/configuring-box-platform (steps 1, 2 & 3)
+. Authorize the app in the target account/repository using the API KEY of the newly created app: https://docs.box.com/docs/configuring-box-platform (step 4)
+. Create RSA KeyPair: https://docs.box.com/docs/app-auth#section-1-generating-an-rsa-keypair[ref, Step 1]
+. Add public key in the created application: https://docs.box.com/docs/app-auth#section-2-submitting-the-public-key[ref, Step 2]
+. Generate an JWT enterprise auth token: use EnterpriseAPIConnection.generateEnterpriseTokenRequest(...). Note that to do that, the private key needs to be converted with the following command:
++
+ openssl pkcs8 -topk8 -inform PEM -outform DER -in private_key.pem -nocrypt > pkcs8_key
++
+NOTE: The enterpriseId can be obtained from the "Enterprise Settings"/"Business Settings" (depending on account type), under the cog options in the Admin panel.
++
+. Authenticate the token obtained in the previous step: https://docs.box.com/docs/app-auth#section-6-constructing-the-oauth2-request[ref, Step 6]
+
+
+
+
 TODO:
 * Create with simple metadata
-* Manage MetadataTemplates
+* Manage Metadata Templates
 * Download content

@@ -1,6 +1,13 @@
 package org.abelsromero.box.sdk.auth
 
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import groovyx.net.http.ContentType
+import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.HttpResponseDecorator
+import groovyx.net.http.Method
+import groovyx.net.http.RESTClient
+import org.apache.http.HttpResponse
 import org.jose4j.jws.AlgorithmIdentifiers
 import org.jose4j.jws.JsonWebSignature
 import org.jose4j.jwt.JwtClaims
@@ -71,5 +78,23 @@ public class EnterpriseAPIConnection {
         return jws.getCompactSerialization()
     }
 
+
+    String authenticate(String secret, String jwtPayload) {
+
+        new HTTPBuilder('https://www.box.com/api').request(Method.POST) {
+            uri.path = '/api/oauth2/token'
+            send(ContentType.URLENC, [
+                    'grant_type'   : 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                    'client_id'    : clientId,
+                    'client_secret': secret,
+                    'assertion'    : jwtPayload
+            ])
+            def token
+            response.success = { resp ->
+                token = new JsonSlurper().parse(resp.entity.content).access_token
+            }
+            return token
+        }
+    }
 
 }

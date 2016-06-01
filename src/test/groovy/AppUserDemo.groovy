@@ -13,15 +13,17 @@ import static org.abelsromero.box.sdk.helpers.FileHelpers.getFile
 
 def config = new ConfigSlurper().parse(getFile('config.groovy').toURL())
 
+/*
 System.setProperty("http.proxyHost", config.proxy.host)
 System.setProperty("http.proxyPort", config.proxy.port)
 System.setProperty("https.proxyHost", config.proxy.host)
 System.setProperty("https.proxyPort", config.proxy.port)
+*/
 
 // Params
-// def key = 'zecm'
+def key = 'zecm'
 // def key = 'randomapp'
-def key = 'sps'
+// def key = 'sps'
 
 def clientId = config."$key".clientId
 def keyId = config."$key".keyId
@@ -35,11 +37,20 @@ PrivateKey signaturekey = RSAKeyReader.readPrivate(privateKey)
 EnterpriseAPIConnection enterpriseAPI = new EnterpriseAPIConnection(clientId, keyId, signaturekey)
 enterpriseAPI.debug = true
 
-println enterpriseAPI.generateEnterpriseTokenRequest(enterpriseId)
-println "=" * 18
-println enterpriseAPI.generateAppUserRequest('user ')
+String enterpriseToken = enterpriseAPI.generateEnterpriseTokenRequest(enterpriseId)
+println enterpriseToken
+println "=" * 36
+//println enterpriseAPI.generateAppUserRequest(user_id)
 
-// BoxAPIConnection api = new BoxAPIConnection('')
-// BoxUser.createAppUser(api, '')
+String authToken = enterpriseAPI.authenticate(config."$key".secret, enterpriseToken)
+
+/**
+ * Create App User
+ */
+BoxAPIConnection api = new BoxAPIConnection(authToken)
+// BoxUser.createAppUser(api, user_name)
 
 
+this.addShutdownHook {
+    println "END"
+}
