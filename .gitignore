@@ -3,3 +3,4 @@
 *.iml
 /**/config.groovy
 /src/test/resources/docs
+/src/test/resources/keys
