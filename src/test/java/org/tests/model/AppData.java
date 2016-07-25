@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 
 /**
  * Application information holder
- *
+ * <p>
  * Created by ABEL.SALGADOROMERO on 15/07/2016.
  */
 public class AppData {
