@@ -93,6 +93,11 @@ public class EnterpriseAPIConnection {
             response.success = { resp ->
                 token = new JsonSlurper().parse(resp.entity.content).access_token
             }
+            response.failure = { resp, reader ->
+                println reader.error
+                println reader.error_description
+            }
+
             return token
         }
     }
