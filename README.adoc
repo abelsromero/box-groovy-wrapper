@@ -7,24 +7,26 @@ Currently this project is just a POC to test of https://github.com/box/box-java-
 
 
 == Notes on app integration steps
-Main documentation can be found here:
 
-. _Setup instance: {configuring-box-platform} (steps 1, 2). Need to be done only once_
-. Setup application: {configuring-box-platform} (step 3) _Steps 1 and 2 need to be done only once_
-. Authorize the app in the target account/repository using the API KEY of the newly created app: {configuring-box-platform} (step 4)
-. Create RSA KeyPair: {app-auth}#section-1-generating-an-rsa-keypair[ref (Step 1)]
+The process to create a new app and integrate using AppUsers is summarized here.
+Steps prefixed with _(Integrator)_ are to be done by App owner, those prefixed by _(Admin)_ are to be done by the Instance administrator.
+
+. _(Integrator)_ Setup dev account: {configuring-box-platform} (steps 1, 2). Need to be done only once
+. _(Integrator)_ Setup application: {configuring-box-platform} (step 3) _Steps 1 and 2 need to be done only once_
+. _(Admin)_ Authorize the app in the target account/repository using the API KEY of the newly created app: {configuring-box-platform} (step 4)
+. _(Integrator)_ Create RSA KeyPair: {app-auth}#section-1-generating-an-rsa-keypair[ref (Step 1)]
 +
  openssl genrsa -aes256 -out private_key.pem 2048
  openssl rsa -pubout -in private_key.pem -out public_key.pem
 +
-. Add public key in the created application: {app-auth}#section-2-submitting-the-public-key[ref (Step 2)]
-. Generate an JWT enterprise auth token: use EnterpriseAPIConnection.generateEnterpriseTokenRequest(...). Note that to do that, the private key needs to be converted with the following command:
+. _(Integrator)_ Add public key in the created application: {app-auth}#section-2-submitting-the-public-key[ref (Step 2)]
+. _(Integrator)_ Generate an JWT enterprise auth token: use EnterpriseAPIConnection.generateEnterpriseTokenRequest(...). Note that to do that, the private key needs to be converted with the following command:
 +
  openssl pkcs8 -topk8 -inform PEM -outform DER -in private_key.pem -nocrypt > pkcs8_key
 +
 NOTE: The enterpriseId can be obtained from the "Enterprise Settings"/"Business Settings" (depending on account type), under the cog options in the Admin panel.
 +
-. Authenticate the token obtained in the previous step: https://docs.box.com/docs/app-auth#section-6-constructing-the-oauth2-request[ref, Step 6]
+. _(Integrator)_ Authenticate the token obtained in the previous step: https://docs.box.com/docs/app-auth#section-6-constructing-the-oauth2-request[ref, Step 6]
 
 OPTIONAL: use this to decrypt the key
  openssl rsa -in zecm_private_key.pem -check > private_key_dec.pem
