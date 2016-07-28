@@ -5,10 +5,10 @@ repositories {
 }
 
 dependencies {
-    // compile group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.54'
-    compile ('com.box:box-java-sdk:2.1.1')
+    compile 'com.box:box-java-sdk:2.1.1'
     compile 'org.codehaus.groovy:groovy-all:2.4.6'
-    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
+
+    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.6'
 }
 
 task wrapper(type: Wrapper) {
