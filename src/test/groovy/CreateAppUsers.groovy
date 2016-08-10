@@ -38,8 +38,12 @@ PrivateKey signaturekey = RSAKeyReader.readPrivate(privateKey)
 EnterpriseAPIConnection enterpriseAPI = new EnterpriseAPIConnection(clientId, keyId, signaturekey)
 enterpriseAPI.debug = true
 
-// First authenticattion step
-token = enterpriseAPI.generateEnterpriseTokenRequest(enterpriseId)
+/*
+ * First authenticattion step: uncomment the line depending on the type of token required.
+ *   Use 'generateEnterpriseTokenRequest' to create an admin token.
+ *   Use 'generateAppUserRequest' to create an standard app user token.
+ */
+// token = enterpriseAPI.generateEnterpriseTokenRequest(enterpriseId)
 token = enterpriseAPI.generateAppUserRequest()
 
 // Second authenticattion step
