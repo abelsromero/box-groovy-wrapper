@@ -1,7 +1,6 @@
 package org.abelsromero.box.sdk;
 
 
-
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -11,6 +10,7 @@ import java.util.Map;
  */
 public class MetadataTemplate {
 
+    // aka. tamplate name
     private String type;
     private JSONObject values;
 
@@ -29,4 +29,10 @@ public class MetadataTemplate {
     public void setValues(JSONObject values) {
         this.values = values;
     }
+
+    @Override
+    public String toString() {
+        return "{" + type + ":" + values.toString() + "}";
+    }
+
 }
