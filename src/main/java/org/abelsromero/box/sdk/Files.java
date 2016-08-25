@@ -4,7 +4,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.apache.commons.collections.map.HashedMap;
+import org.abelsromero.box.sdk.helpers.FileHelpers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -12,7 +12,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.abelsromero.box.sdk.helpers.MapBuilder.emptyMap;
 
 public class Files {
 
@@ -135,32 +140,54 @@ public class Files {
 
         if (response.getStatus() != expectedCode) {
             throw new BoxException("Error " + message +
-                    ". [code:'" + response.getStatus() + "', message:'" + response.getStatusText() + "']", response);
+                    ". [code:'" + response.getStatus() + "', status:'" + response.getStatusText() + "']", response);
         }
     }
 
     public static void main(String[] args) throws UnirestException {
 
-        String token = "";
-        String fileId = "";
+        String token = "-";
+        String folderId = "-";
 
+        // Instantiate service interface
         Files file = new Files();
+
+        // Gets file located in the classpath
+        String fileId = file.upload(
+                FileHelpers.getResource("Test Document 1.docx"),
+                "Test Document -" + new Date() + "+.pdf",
+                folderId,
+                token
+        );
+        System.out.println("Created new file: " + fileId);
         System.out.println("Original metadata");
         System.out.println(file.getMetadata(fileId, token));
 
-        Map<String, Object> values = new HashedMap() {{
-            put("metadataKey1", "Number - " + new Date());
-            put("metadataKey2_is_date", new Date());
-        }};
-        // If template already exists, it will fail
-        file.addMetadataTemplate(fileId, "enterprise", "templateName", values, token);
+        // Important: if template already exists, it will fail
+        file.addMetadataTemplate(fileId, "enterprise",
+                "-",
+                emptyMap().
+                        put("-", "Number - " + new Date()).
+                        put("-", new Date()).
+                        build(),
+                token);
+
+        file.addMetadataTemplate(fileId, "enterprise",
+                "-",
+                emptyMap().put("country", "Colombia").build(),
+                token);
 
         System.out.println("Metadata added");
-        System.out.println(file.getMetadata(fileId, token));
+        for (MetadataTemplate mt : file.getMetadata(fileId, token)) {
+            System.out.println(">> " + mt);
+        }
 
-        values.put("metadataKey1", "Number_2 - " + new Date());
         // template can be updated many times
-        file.updateMetadataTemplate(fileId, "enterprise", "templateName", values, token);
+        file.updateMetadataTemplate(fileId, "enterprise",
+                "-",
+                emptyMap().
+                        put("country", "Mexico").build(),
+                token);
     }
 
 }
